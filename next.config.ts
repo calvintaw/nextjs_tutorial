@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+	experimental: {
+		ppr: "incremental",
+	},
+	devIndicators: {},
 };
 
 export default nextConfig;
