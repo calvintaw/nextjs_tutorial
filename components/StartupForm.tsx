@@ -1,58 +1,101 @@
 "use client";
-import React, { useState } from "react";
+
+import dynamic from "next/dynamic";
+const MarkdownEditor = dynamic(
+	() => import("@uiw/react-markdown-editor"),
+	{ ssr: false } // disable server-side rendering
+);
+import React, { useState, useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import MarkdownEditor from "@uiw/react-markdown-editor";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { useActionState } from "react";
 import { formSchema } from "@/lib/validation";
 import { z } from "zod";
-
-// import { Button } from "@/components/ui/button";
-// import { Send } from "lucide-react";
-// import { formSchema } from "@/lib/validation";
-// import { z } from "zod";
-// import { useToast } from "@/hooks/use-toast";
-// import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 // import { createPitch } from "@/lib/actions";
+const initialFormData = {
+	title: "",
+	description: "",
+	category: "",
+	link: "",
+};
 
 const StartupForm = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [pitch, setPitch] = useState("");
+	const [formData, setFormData] = useState(initialFormData);
+	const { toast } = useToast();
+	const router = useRouter();
+
 	const handleFormSubmit = async (prevState: any, formData: FormData) => {
 		try {
 			const formValues = {
 				title: formData.get("title") as string,
 				description: formData.get("description") as string,
-				link: formData.get("link") as string,
 				category: formData.get("category") as string,
+				link: formData.get("link") as string,
 				pitch,
 			};
 
 			await formSchema.parseAsync(formValues);
-			console.log("formValues: ", formValues);
+			console.log(formValues);
 
-			// const result = await createIdea(prevState, formData, pitch)
-			// console.log(desult)
+			// const result = await createPitch(prevState, formData, pitch);
+
+			// if (result.status == "SUCCESS") {
+			// 	toast({
+			// 		title: "Success",
+			// 		description: "Your startup pitch has been created successfully",
+			// 	});
+
+			// 	router.push(`/startup/${result._id}`);
+			// }
+
+			// return result;
+			setFormData(initialFormData);
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				const fieldErrors = error.flatten().fieldErrors;
-				setErrors(fieldErrors as unknown as Record<string, string>);
+				const fieldErorrs = error.flatten().fieldErrors;
+
+				setErrors(fieldErorrs as unknown as Record<string, string>);
+
+				toast({
+					title: "Error",
+					description: "Please check your inputs and try again",
+					variant: "destructive",
+				});
+
 				return { ...prevState, error: "Validation failed", status: "ERROR" };
 			}
+
+			toast({
+				title: "Error",
+				description: "An unexpected error has occurred",
+				variant: "destructive",
+			});
 
 			return {
 				...prevState,
 				error: "An unexpected error has occurred",
 				status: "ERROR",
 			};
-		} finally {
 		}
 	};
 
-	const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
+	const [state, formAction, isPending] = useActionState(handleFormSubmit, {
+		error: "",
+		status: "INITIAL",
+	});
 
-	const [pitch, setPitch] = useState("");
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
 
 	return (
 		<form action={formAction} className="startup-form">
@@ -60,8 +103,15 @@ const StartupForm = () => {
 				<label htmlFor="title" className="startup-form_label">
 					Title
 				</label>
-				<Input id="title" name="title" className="startup-form_input" required placeholder="Startup Title" />
-
+				<Input
+					id="title"
+					name="title"
+					className="startup-form_input"
+					required
+					placeholder="Startup Title"
+					value={formData.title}
+					onChange={handleChange}
+				/>
 				{errors.title && <p className="startup-form_error">{errors.title}</p>}
 			</div>
 
@@ -75,8 +125,9 @@ const StartupForm = () => {
 					className="startup-form_textarea"
 					required
 					placeholder="Startup Description"
+					value={formData.description}
+					onChange={handleChange}
 				/>
-
 				{errors.description && <p className="startup-form_error">{errors.description}</p>}
 			</div>
 
@@ -90,8 +141,9 @@ const StartupForm = () => {
 					className="startup-form_input"
 					required
 					placeholder="Startup Category (Tech, Health, Education...)"
+					value={formData.category}
+					onChange={handleChange}
 				/>
-
 				{errors.category && <p className="startup-form_error">{errors.category}</p>}
 			</div>
 
@@ -99,8 +151,15 @@ const StartupForm = () => {
 				<label htmlFor="link" className="startup-form_label">
 					Image URL
 				</label>
-				<Input id="link" name="link" className="startup-form_input" required placeholder="Startup Image URL" />
-
+				<Input
+					id="link"
+					name="link"
+					className="startup-form_input"
+					required
+					placeholder="Startup Image URL"
+					value={formData.link}
+					onChange={handleChange}
+				/>
 				{errors.link && <p className="startup-form_error">{errors.link}</p>}
 			</div>
 
@@ -114,7 +173,6 @@ const StartupForm = () => {
 					onChange={(value) => setPitch(value as string)}
 					id="pitch"
 					height="300px"
-					preview="edit"
 					style={{ borderRadius: 20, overflow: "hidden" }}
 					placeholder="Briefly describe your idea and what problem it solves"
 				/>
