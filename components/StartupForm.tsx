@@ -3,6 +3,11 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MarkdownEditor from "@uiw/react-markdown-editor";
+import { Button } from "./ui/button";
+import { Send } from "lucide-react";
+import { useActionState } from "react";
+import { formSchema } from "@/lib/validation";
+import { z } from "zod";
 
 // import { Button } from "@/components/ui/button";
 // import { Send } from "lucide-react";
@@ -14,11 +19,43 @@ import MarkdownEditor from "@uiw/react-markdown-editor";
 
 const StartupForm = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const handleFormSubmit = async (prevState: any, formData: FormData) => {
+		try {
+			const formValues = {
+				title: formData.get("title") as string,
+				description: formData.get("description") as string,
+				link: formData.get("link") as string,
+				category: formData.get("category") as string,
+				pitch,
+			};
 
-	const [pitch, setPitch] = useState("**Hello World!**");
+			await formSchema.parseAsync(formValues);
+			console.log("formValues: ", formValues);
+
+			// const result = await createIdea(prevState, formData, pitch)
+			// console.log(desult)
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				const fieldErrors = error.flatten().fieldErrors;
+				setErrors(fieldErrors as unknown as Record<string, string>);
+				return { ...prevState, error: "Validation failed", status: "ERROR" };
+			}
+
+			return {
+				...prevState,
+				error: "An unexpected error has occurred",
+				status: "ERROR",
+			};
+		} finally {
+		}
+	};
+
+	const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
+
+	const [pitch, setPitch] = useState("");
 
 	return (
-		<form action={() => {}} className="startup-form">
+		<form action={formAction} className="startup-form">
 			<div>
 				<label htmlFor="title" className="startup-form_label">
 					Title
@@ -67,20 +104,28 @@ const StartupForm = () => {
 				{errors.link && <p className="startup-form_error">{errors.link}</p>}
 			</div>
 
-			{/* <MarkdownEditor
-				value={pitch}
-				onChange={(value) => setPitch(value as string)}
-				id="pitch"
-				height={300}
-				preview="edit"
-				style={{ borderRadius: 20, overflow: "hidden" }}
-				textareaProps={{
-					placeholder: "Briefly describe your idea and what problem it solves",
-				}}
-				previewOptions={{
-					disallowElements: ["style"],
-				}}
-			/> */}
+			<div data-color-mode="light">
+				<label htmlFor="pitch" className="startup-from_label">
+					Pitch
+				</label>
+
+				<MarkdownEditor
+					value={pitch}
+					onChange={(value) => setPitch(value as string)}
+					id="pitch"
+					height="300px"
+					preview="edit"
+					style={{ borderRadius: 20, overflow: "hidden" }}
+					placeholder="Briefly describe your idea and what problem it solves"
+				/>
+
+				{errors.pitch && <p className="startup-form_error">{errors.pitch}</p>}
+			</div>
+
+			<Button disabled={isPending} type="submit" className="startup-form_btn text-white">
+				{isPending ? "Submitting..." : "Submit Your Pitch"}
+				<Send className="size-6 ml-2"></Send>
+			</Button>
 		</form>
 	);
 };
