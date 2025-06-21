@@ -1,6 +1,6 @@
-declare module "nex-auth" {
+declare module "next-auth" {
 	interface Session {
-		id: sring;
+		id: string;
 	}
 
 	interface JWT {

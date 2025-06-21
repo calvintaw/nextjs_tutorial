@@ -19,8 +19,6 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
 	if (!post) return notFound();
 
-	console.log(post.author.username);
-
 	const parsedContent = md.render(post?.pitch || " ");
 
 	return (
@@ -46,12 +44,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 							></Image>
 
 							<div>
-								<p className="text-20-medium">{post.author.name}</p>
-								<p className="text-16-medium !text-black-300">@{post.author.username}</p>
+								<p className="text-20-medium">{post?.author?.name}</p>
+								<p className="text-16-medium !text-black-300">@{post?.author?.username}</p>
 							</div>
-						</Link>g
-
-						<p className="category-tag">{post.category}</p>
+						</Link>
+						g<p className="category-tag">{post.category}</p>
 					</div>
 
 					<h3 className="text-30-bold">Pitch Details</h3>
@@ -65,10 +62,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 				<hr className="divider" />
 				{/* TO DO: EDITOR SELECTED STARTUPS*/}
 				<Suspense fallback={<Skeleton></Skeleton>}>
-				<View id={id}></View>
-				
-				
-				
+					<View id={id}></View>
 				</Suspense>
 			</section>
 		</>
