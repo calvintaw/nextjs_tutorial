@@ -3,7 +3,6 @@ import StartupCard, { StartupCardType } from "@/components/StartupCard";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { auth } from "@/auth";
-import { Toaster } from "@/components/ui/toaster";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
 	const query = (await searchParams).query;
@@ -15,7 +14,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 	console.log("Session: ", session);
 	return (
 		<>
-			<Toaster />
 			<section className="pink_container">
 				<h1 className="heading">
 					Pitch Your Startup, <br></br>Connect Wtih Entrepreneurs
