@@ -1,6 +1,5 @@
 "use client";
 
-import { openai_client } from "../lib/openai";
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(
 	() => import("@uiw/react-markdown-editor"),
@@ -18,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 import { handleOpenAI } from "@/lib/openai";
 import { AIButton, LoadingIcon } from "./AiButton";
-import clsx from "clsx";
 
 const initialFormData = {
 	title: "",
@@ -33,7 +31,7 @@ const StartupForm = () => {
 	const [formValues, setFormValues] = useState(initialFormData);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
-	const {toast } = useToast()
+	const { toast } = useToast();
 
 	const handleAI = async () => {
 		setIsLoading(true);
