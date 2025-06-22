@@ -9,7 +9,8 @@ const SearchForm = ({ query }: { query?: string }) => {
 			<input name="query" defaultValue={query} className=" search-input" placeholder="Search Startups" />
 
 			{/* Button */}
-			<div className="flex gap-2">
+			<div classN
+				ame="flex gap-2">
 				{query && <SearchFormReset />}
 
 				<button type="submit" className="search-btn text-white">

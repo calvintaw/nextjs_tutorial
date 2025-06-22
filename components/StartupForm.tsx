@@ -1,5 +1,6 @@
 "use client";
 
+import { openai_client } from "../lib/openai";
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(
 	() => import("@uiw/react-markdown-editor"),
@@ -15,6 +16,9 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
+import { handleOpenAI } from "@/lib/openai";
+import { AIButton, LoadingIcon } from "./AiButton";
+import clsx from "clsx";
 
 const initialFormData = {
 	title: "",
@@ -27,8 +31,26 @@ const StartupForm = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [pitch, setPitch] = useState("");
 	const [formValues, setFormValues] = useState(initialFormData);
+	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
+
+	const handleAI = async () => {
+		setIsLoading(true);
+		const { title, description, category, link, pitch } = await handleOpenAI({
+			title: formValues.title,
+			description: formValues.description,
+			category: formValues.category,
+		});
+		setPitch(pitch);
+		setFormValues({
+			title,
+			description,
+			link,
+			category,
+		});
+		setIsLoading(false);
+	};
 
 	const handleFormSubmit = async (prevState: any, formData: FormData) => {
 		try {
@@ -183,10 +205,18 @@ const StartupForm = () => {
 				{errors.pitch && <p className="startup-form_error">{errors.pitch}</p>}
 			</div>
 
-			<Button disabled={isPending} type="submit" className="startup-form_btn text-white">
-				{isPending ? "Submitting..." : "Submit Your Pitch"}
-				<Send className="size-6 ml-2"></Send>
-			</Button>
+			<div className="flex flex-wrap items-center justify-end gap-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+				<Button disabled={isPending} type="submit" className="startup-form_btn">
+					{isPending && (
+						<span className="mr-4 -ml-3 flex-shrink-0">
+							<LoadingIcon className="!h-8 !w-8" />
+						</span>
+					)}
+					{isPending ? "Submitting..." : "Submit Your Pitch"}
+					<Send className="size-6 ml-2" />
+				</Button>
+				<AIButton onClick={handleAI} isLoading={isLoading}></AIButton>
+			</div>
 		</form>
 	);
 };
