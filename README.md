@@ -27,6 +27,7 @@
 1. ⚙️ [Package.json](#package)
 2. 🤸 [Environment Variables](#variables)
 3. 🤖 [New Feature I added](#new_features)
+4. ⚠️ [Things to be wary of](#warnings)
 
 ## <a name="variables">⚙️ Set Up Environment Variables</a>
 
@@ -490,10 +491,17 @@ export default StartupForm;
 
 </details>
 
-Also add Toaster to the root of your project [/app/layout.tsx]
-I use the google font version of Work_sans as I experience some errors during deployment to Vercel
+## ⚠️ <a name="warnings">Things to Be Wary Of</a>
 
-```typescript
+### 🧩 Add `<Toaster />` to the Root Layout
+
+Ensure you add the `Toaster` component to the root of your project:
+
+**File:** `/app/layout.tsx`
+
+I also used the Google Fonts version of `Work_Sans`, as I encountered some font-related deployment issues with Vercel.
+
+```tsx
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
@@ -521,11 +529,38 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${workSans.variable}`}>
 				{children}
-				<Toaster></Toaster>
+				<Toaster />
 			</body>
 		</html>
 	);
 }
+```
+
+---
+
+### 📌 Reminder: Add the Playlist Schema Setup. (JSM forgot to add this)
+
+When you reach this point in the tutorial — [**05:02:04 – Final Feature, Parallel Fetching and Deployment**](https://www.youtube.com/watch?v=Zq5fmkH0T78&t=19114s) —  
+**make sure to add the following code** to:
+
+```
+/app/sanity/structures.ts
+```
+
+Without this, your **playlist schema** will not appear in **Sanity Studio**.
+
+```ts
+import type { StructureResolver } from "sanity/structure";
+
+// https://www.sanity.io/docs/structure-builder-cheat-sheet
+export const structure: StructureResolver = (S) =>
+	S.list()
+		.title("Content")
+		.items([
+			S.documentTypeListItem("author").title("Authors"),
+			S.documentTypeListItem("startup").title("Startups"),
+			S.documentTypeListItem("playlist").title("Playlist"),
+		]);
 ```
 
 ## ⚠️ Note
