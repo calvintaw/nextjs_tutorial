@@ -32,8 +32,8 @@ const StartupForm = () => {
 	const [pitch, setPitch] = useState("");
 	const [formValues, setFormValues] = useState(initialFormData);
 	const [isLoading, setIsLoading] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
+	const {toast } = useToast()
 
 	const handleAI = async () => {
 		setIsLoading(true);
