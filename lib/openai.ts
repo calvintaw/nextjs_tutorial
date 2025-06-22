@@ -6,12 +6,11 @@ const openai_client = new OpenAI({
 	apiKey: process.env.OPENROUTER_API_KEY!,
 	baseURL: "https://openrouter.ai/api/v1",
 	defaultHeaders: {
-		"HTTP-Referer": "http://localhost:3000", // Change this to your actual deployed URL
+		"HTTP-Referer": "https://yc-directory-tutorial-nine.vercel.app", // Change this to your actual deployed URL
 	},
 });
 
 export const handleOpenAI = async (requirements: { title: string; description: string; category: string }) => {
-	console.log("Asking AI...");
 
 	const { title, description, category } = requirements;
 
@@ -40,7 +39,6 @@ export const handleOpenAI = async (requirements: { title: string; description: s
 	// changes it into actual js object
 	const validObject = eval(`(${raw})`);
 
-	console.log("AI RESPONSE:", validObject);
 	return validObject;
 };
 

@@ -23,7 +23,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 	if (!post) return notFound();
 
 	const parsedContent = md.render(post?.pitch || " ");
-	
+
 	return (
 		<>
 			<section className="pink_container !min-h-[230px] ">

@@ -187,11 +187,11 @@
 
 	/* view */
 	.view-container {
-		@apply flex justify-end items-center mt-5 fixed bottom-3 right-3;
+		@apply flex justify-end items-center fixed left-13 bottom-4;
 	}
 
 	.view-text {
-		@apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-lg capitalize;
+		@apply font-medium text-[16px] bg-black-200 px-4 py-2 rounded-lg capitalize text-white;
 	}
 
 	.category-tag {

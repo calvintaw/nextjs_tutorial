@@ -1,10 +1,9 @@
 "use client";
 
-import { openai_client } from "../lib/openai";
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(
 	() => import("@uiw/react-markdown-editor"),
-	{ ssr: false } // disable server-side rendering
+	{ ssr: false } 
 );
 import React, { useState, useActionState } from "react";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 import { handleOpenAI } from "@/lib/openai";
 import { AIButton, LoadingIcon } from "./AiButton";
-import clsx from "clsx";
 
 const initialFormData = {
 	title: "",
@@ -32,8 +30,8 @@ const StartupForm = () => {
 	const [pitch, setPitch] = useState("");
 	const [formValues, setFormValues] = useState(initialFormData);
 	const [isLoading, setIsLoading] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const handleAI = async () => {
 		setIsLoading(true);
@@ -62,10 +60,8 @@ const StartupForm = () => {
 				pitch,
 			};
 
-			console.log("image link:", formValues.link);
 
 			await formSchema.parseAsync(formValues);
-			console.log(formValues);
 
 			const result = await createPitch(prevState, formData, pitch);
 

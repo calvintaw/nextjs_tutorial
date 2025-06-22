@@ -85,11 +85,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 		"typegen": "sanity schema extract --path=./sanity/extract.json && sanity typegen generate"
 	},
 	"dependencies": {
+		"@radix-ui/react-avatar": "^1.1.10",
 		"@radix-ui/react-icons": "^1.3.2",
 		"@radix-ui/react-slot": "^1.2.3",
 		"@radix-ui/react-toast": "^1.2.14",
 		"@sanity/image-url": "^1.1.0",
 		"@sanity/vision": "^3.92.0",
+		"@sentry/nextjs": "^9.30.0",
 		"@tailwindcss/typography": "^0.5.16",
 		"@uiw/react-markdown-editor": "^6.1.4",
 		"autoprefixer": "^10.4.21",
@@ -144,19 +146,17 @@ const openai_client = new OpenAI({
 	apiKey: process.env.OPENROUTER_API_KEY!,
 	baseURL: "https://openrouter.ai/api/v1",
 	defaultHeaders: {
-		"HTTP-Referer": "http://localhost:3000", // Change this to your actual deployed URL
+		"HTTP-Referer": "https://yc-directory-tutorial-nine.vercel.app", // Change this to your actual deployed URL
 	},
 });
 
 export const handleOpenAI = async (requirements: { title: string; description: string; category: string }) => {
-	console.log("Asking AI...");
-
 	const { title, description, category } = requirements;
 
 	// Asks AI to generate based on Form Field Values if provide else generates its own Idea
 
 	const response = await openai_client.chat.completions.create({
-		model: "mistralai/mistral-small-3.2-24b-instruct:free", // lightweight, free
+		model: "deepseek/deepseek-chat-v3-0324:free",
 		messages: [
 			{
 				role: "system",
@@ -178,7 +178,6 @@ export const handleOpenAI = async (requirements: { title: string; description: s
 	// changes it into actual js object
 	const validObject = eval(`(${raw})`);
 
-	console.log("AI RESPONSE:", validObject);
 	return validObject;
 };
 
@@ -195,7 +194,7 @@ function getInstructions({ title, description, category }: { title: string; desc
 		category: string (3–20 characters) ${category ? `"grow your idea from this: ${category}"` : ""},
 		link: string (a valid image URL — ends in .jpg, .png, etc.) (provide an appropriately sized image from Pexels or other free image platforms like Unsplash, Pixabay, or search the web for a relevant photo that strongly matches and is consistent with the startup theme) (size: ideally looks good for any screen size),
 
-		pitch: string (at least 10 characters but prefereed range = 400 - 800. — write this as a detailed and beautifully formatted pitch in **Markdown** and also pretty to look at (emojis can be included and are prefereed) and this string MUST be enclosed in backticks (\`) exactly like a JavaScript template literal) (You can make add details of how much support you think your pitch will have and how much growth is expected BUT strongly advised not to LIE)
+		pitch: string (at least 10 characters but prefereed range between 600 and 1000 words (longer is preferred).  Write this as a professional detailed and beautifully formatted pitch in **Markdown** and also pretty to look at (emojis can be included and are prefereed) and this string MUST be enclosed in backticks (\`) exactly like a JavaScript template literal) (You can make add details of how much support you think your pitch will have and how much growth is expected BUT strongly advised not to LIE) (Optional: how much funding is needed)
 	}
 
 	If any "grow your idea from this" phrases are provided, make sure the entire startup idea — including title, description, category, and pitch — strongly matches and is consistent with that theme.
@@ -210,7 +209,7 @@ function getInstructions({ title, description, category }: { title: string; desc
 	pitch: \`## EcoFarm\nEcoFarm is a platform that...\`
 	}
 
-	return only valid JavaScript object — no explanation, no extra text, no formatting. The object should be syntactically valid JavaScript.
+	return only valid JavaScript object — no explanation, no extra text, no formatting. oThe object should be syntactically valid JavaScript.
 
 
 	`;
@@ -269,11 +268,10 @@ export function AIButton({ isLoading, onClick }: Props) {
 ```typescript
 "use client";
 
-import { openai_client } from "../lib/openai";
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(
 	() => import("@uiw/react-markdown-editor"),
-	{ ssr: false } // disable server-side rendering
+	{ ssr: false }
 );
 import React, { useState, useActionState } from "react";
 import { Input } from "@/components/ui/input";
@@ -287,7 +285,6 @@ import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 import { handleOpenAI } from "@/lib/openai";
 import { AIButton, LoadingIcon } from "./AiButton";
-import clsx from "clsx";
 
 const initialFormData = {
 	title: "",
@@ -301,8 +298,8 @@ const StartupForm = () => {
 	const [pitch, setPitch] = useState("");
 	const [formValues, setFormValues] = useState(initialFormData);
 	const [isLoading, setIsLoading] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const handleAI = async () => {
 		setIsLoading(true);
@@ -331,10 +328,8 @@ const StartupForm = () => {
 				pitch,
 			};
 
-			console.log("image link:", formValues.link);
 
 			await formSchema.parseAsync(formValues);
-			console.log(formValues);
 
 			const result = await createPitch(prevState, formData, pitch);
 
@@ -495,6 +490,44 @@ export default StartupForm;
 
 </details>
 
+Also add Toaster to the root of your project [/app/layout.tsx]
+I use the google font version of Work_sans as I experience some errors during deployment to Vercel
+
+```typescript
+import type { Metadata } from "next";
+import { Work_Sans } from "next/font/google";
+import "./globals.css";
+import "easymde/dist/easymde.min.css";
+import { Toaster } from "@/components/ui/toaster";
+
+const workSans = Work_Sans({
+	subsets: ["latin"],
+	weight: ["100", "200", "400", "500", "600", "700", "800", "900"],
+	variable: "--font-work-sans",
+	display: "swap",
+});
+
+export const metadata: Metadata = {
+	title: "Yc Directory",
+	description: "Pitch, Invest & Grow",
+};
+
+export default function RootLayout({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) {
+	return (
+		<html lang="en">
+			<body className={`${workSans.variable}`}>
+				{children}
+				<Toaster></Toaster>
+			</body>
+		</html>
+	);
+}
+```
+
 ## ⚠️ Note
 
 Removed experimental PPR due to bugs that blocked installation of `react-markdown-editor`. Could be a skill issue 🤷‍♂️, but sharing in case it helps someone else.
@@ -505,7 +538,7 @@ Removed experimental PPR due to bugs that blocked installation of `react-markdow
 
 ```typescript
 import { client } from "@/sanity/lib/client";
-import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
+import { PLAYLIST_BY_SLUG_QUERY, STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
 import { formatDate } from "@/lib/utils";
@@ -514,14 +547,17 @@ import Image from "next/image";
 import markdownit from "markdown-it";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/view";
+import StartupCard, { StartupCardType } from "@/components/StartupCard";
 
 const md = markdownit();
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const id = (await params).id;
-	console.log({ id });
 
-	const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
+	const [post, { select: editorPosts }] = await Promise.all([
+		client.fetch(STARTUP_BY_ID_QUERY, { id }),
+		client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "editor-pick" }),
+	]);
 
 	if (!post) return notFound();
 
@@ -566,7 +602,21 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 				</div>
 
 				<hr className="divider" />
+
 				{/* TO DO: EDITOR SELECTED STARTUPS*/}
+
+				{editorPosts?.length > 0 && (
+					<div className="max-w-4xl mx-auto">
+						<p className="text-30-semibold">Editor Picks</p>
+
+						<ul className="mt-7 card_grid-sm">
+							{editorPosts.map((post: StartupCardType, index: number) => (
+								<StartupCard key={index} post={post}></StartupCard>
+							))}
+						</ul>
+					</div>
+				)}
+
 				<Suspense fallback={<Skeleton></Skeleton>}>
 					<View id={id}></View>
 				</Suspense>
@@ -576,7 +626,6 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 export default Page;
-
 ```
 
 </details>
