@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(
 	() => import("@uiw/react-markdown-editor"),
-	{ ssr: false } // disable server-side rendering
+	{ ssr: false } 
 );
 import React, { useState, useActionState } from "react";
 import { Input } from "@/components/ui/input";

@@ -6,7 +6,7 @@ const openai_client = new OpenAI({
 	apiKey: process.env.OPENROUTER_API_KEY!,
 	baseURL: "https://openrouter.ai/api/v1",
 	defaultHeaders: {
-		"HTTP-Referer": "http://localhost:3000", // Change this to your actual deployed URL
+		"HTTP-Referer": "https://yc-directory-tutorial-nine.vercel.app", // Change this to your actual deployed URL
 	},
 });
 
