@@ -57,30 +57,3 @@ export const createPitch = async (state: any, formData: FormData, pitch: string)
 		});
 	}
 };
-
-
-
-// const createAutomaticPitch = async (data) => {
-// 	data.map((item) => {
-// 		try {
-// 			const _id = 190220508
-// 			const {
-// 				title,
-// 				description,
-// 				category,
-// 				image: link,
-// 				slug: {
-// 					_type: slug,
-// 					current: slug,
-// 				},
-// 				author: {
-// 					_type: "reference",
-// 					_ref: 190220508,
-// 				},
-// 				pitch,
-// 			} = item
-// 			const views = 1
-
-// 		}
-// 	})
-// }
