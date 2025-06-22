@@ -60,10 +60,8 @@ const StartupForm = () => {
 				pitch,
 			};
 
-			console.log("image link:", formValues.link);
 
 			await formSchema.parseAsync(formValues);
-			console.log(formValues);
 
 			const result = await createPitch(prevState, formData, pitch);
 

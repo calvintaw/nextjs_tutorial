@@ -11,7 +11,6 @@ const openai_client = new OpenAI({
 });
 
 export const handleOpenAI = async (requirements: { title: string; description: string; category: string }) => {
-	console.log("Asking AI...");
 
 	const { title, description, category } = requirements;
 
@@ -40,7 +39,6 @@ export const handleOpenAI = async (requirements: { title: string; description: s
 	// changes it into actual js object
 	const validObject = eval(`(${raw})`);
 
-	console.log("AI RESPONSE:", validObject);
 	return validObject;
 };
 

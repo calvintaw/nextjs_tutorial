@@ -149,7 +149,6 @@ const openai_client = new OpenAI({
 });
 
 export const handleOpenAI = async (requirements: { title: string; description: string; category: string }) => {
-	console.log("Asking AI...");
 
 	const { title, description, category } = requirements;
 
@@ -177,8 +176,6 @@ export const handleOpenAI = async (requirements: { title: string; description: s
 
 	// changes it into actual js object
 	const validObject = eval(`(${raw})`);
-
-	console.log("AI RESPONSE:", validObject);
 	return validObject;
 };
 
@@ -331,11 +328,8 @@ const StartupForm = () => {
 				pitch,
 			};
 
-			console.log("image link:", formValues.link);
 
 			await formSchema.parseAsync(formValues);
-			console.log(formValues);
-
 			const result = await createPitch(prevState, formData, pitch);
 
 			if (result.status == "SUCCESS") {
@@ -519,8 +513,6 @@ const md = markdownit();
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const id = (await params).id;
-	console.log({ id });
-
 	const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
 
 	if (!post) return notFound();

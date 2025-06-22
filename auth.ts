@@ -35,7 +35,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					})
 					.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile?.id });
 
-				console.log("Fetched user from Sanity:", user);
 				token.id = user?._id;
 			}
 
