@@ -48,6 +48,18 @@ OPENROUTER_API_KEY=
 Replace the placeholder values with your actual Sanity credentials. You can obtain these credentials by signing up &
 creating a new project on the [Sanity website](https://www.sanity.io/).
 
+Replace `OPENROUTER_API_KEY` with your key from OpenRouter:
+
+1. Sign up or log in
+2. Click your profile, then select **Keys**
+3. Generate a new API key
+4. Copy and paste it into your `.env` file
+
+To choose a model:
+
+1. Go to the **Models** tab
+2. Click the **API** tab for available options
+
 **Running the Project**
 
 ```bash
