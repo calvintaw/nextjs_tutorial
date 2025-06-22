@@ -21,7 +21,6 @@ export const startup = defineType({
 			type: "reference",
 			to: { type: "author" },
 		}),
-
 		defineField({
 			name: "views",
 			type: "number",

@@ -1,17 +1,24 @@
 "use server";
 
-import { writeClient } from "@/sanity/lib/write-client";
-import { parseServerActionResponse } from "./utils";
-import slugify from "slugify";
 import { auth } from "@/auth";
+import { parseServerActionResponse } from "@/lib/utils";
+import slugify from "slugify";
+import { writeClient } from "@/sanity/lib/write-client";
 
-export const createPitch = async (state: any, form: FormData, pitch: string) => {
+
+
+
+export const createPitch = async (state: any, formData: FormData, pitch: string) => {
 	const session = await auth();
 
-	if (!session) return parseServerActionResponse({ error: "Not signed in", status: "ERROR" });
+	if (!session)
+		return parseServerActionResponse({
+			error: "Not signed in",
+			status: "ERROR",
+		});
 
 	const { title, description, category, link } = Object.fromEntries(
-		Array.from(form).filter(([key]) => key !== "pitch")
+		Array.from(formData).filter(([key]) => key !== "pitch")
 	);
 
 	const slug = slugify(title as string, { lower: true, strict: true });
@@ -29,15 +36,12 @@ export const createPitch = async (state: any, form: FormData, pitch: string) => 
 			author: {
 				_type: "reference",
 				_ref: session?.id,
-            },
-            views: 1,
-            pitch
+			},
+			pitch,
+			views: 1,
 		};
 
-		const result = await writeClient.create({
-			_type: "startup",
-			...startup,
-		});
+		const result = await writeClient.create({ _type: "startup", ...startup });
 
 		return parseServerActionResponse({
 			...result,
@@ -53,3 +57,30 @@ export const createPitch = async (state: any, form: FormData, pitch: string) => 
 		});
 	}
 };
+
+
+
+// const createAutomaticPitch = async (data) => {
+// 	data.map((item) => {
+// 		try {
+// 			const _id = 190220508
+// 			const {
+// 				title,
+// 				description,
+// 				category,
+// 				image: link,
+// 				slug: {
+// 					_type: slug,
+// 					current: slug,
+// 				},
+// 				author: {
+// 					_type: "reference",
+// 					_ref: 190220508,
+// 				},
+// 				pitch,
+// 			} = item
+// 			const views = 1
+
+// 		}
+// 	})
+// }

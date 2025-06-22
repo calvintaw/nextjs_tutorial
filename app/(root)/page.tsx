@@ -12,10 +12,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 	const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 
 	const session = await auth();
-	console.log(session?.id);
+	console.log("Session: ", session);
 	return (
 		<>
-			<Toaster/>
+			<Toaster />
 			<section className="pink_container">
 				<h1 className="heading">
 					Pitch Your Startup, <br></br>Connect Wtih Entrepreneurs
@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
 
 				<ul className="mt-7 card_grid">
 					{posts?.length > 0 ? (
-						posts.map((post: StartupCardType, index: number) => <StartupCard key={post?._id} post={post} />)
+						posts.map((post: StartupCardType) => <StartupCard key={post?._id} post={post} />)
 					) : (
 						<>
 							<h1>500 Interal SErver error</h1>

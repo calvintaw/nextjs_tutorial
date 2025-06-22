@@ -16,7 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 
-
 const initialFormData = {
 	title: "",
 	description: "",
@@ -27,7 +26,7 @@ const initialFormData = {
 const StartupForm = () => {
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [pitch, setPitch] = useState("");
-	const [formData, setFormData] = useState(initialFormData);
+	const [formValues, setFormValues] = useState(initialFormData);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -40,6 +39,8 @@ const StartupForm = () => {
 				link: formData.get("link") as string,
 				pitch,
 			};
+
+			console.log("image link:", formValues.link);
 
 			await formSchema.parseAsync(formValues);
 			console.log(formValues);
@@ -55,7 +56,7 @@ const StartupForm = () => {
 				router.push(`/startup/${result._id}`);
 			}
 
-			setFormData(initialFormData);
+			setFormValues(initialFormData);
 			return result;
 		} catch (error) {
 			if (error instanceof z.ZodError) {
@@ -93,7 +94,7 @@ const StartupForm = () => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prev) => ({
+		setFormValues((prev) => ({
 			...prev,
 			[name]: value,
 		}));
@@ -111,7 +112,7 @@ const StartupForm = () => {
 					className="startup-form_input"
 					required
 					placeholder="Startup Title"
-					value={formData.title}
+					value={formValues.title}
 					onChange={handleChange}
 				/>
 				{errors.title && <p className="startup-form_error">{errors.title}</p>}
@@ -127,7 +128,7 @@ const StartupForm = () => {
 					className="startup-form_textarea"
 					required
 					placeholder="Startup Description"
-					value={formData.description}
+					value={formValues.description}
 					onChange={handleChange}
 				/>
 				{errors.description && <p className="startup-form_error">{errors.description}</p>}
@@ -143,7 +144,7 @@ const StartupForm = () => {
 					className="startup-form_input"
 					required
 					placeholder="Startup Category (Tech, Health, Education...)"
-					value={formData.category}
+					value={formValues.category}
 					onChange={handleChange}
 				/>
 				{errors.category && <p className="startup-form_error">{errors.category}</p>}
@@ -159,7 +160,7 @@ const StartupForm = () => {
 					className="startup-form_input"
 					required
 					placeholder="Startup Image URL"
-					value={formData.link}
+					value={formValues.link}
 					onChange={handleChange}
 				/>
 				{errors.link && <p className="startup-form_error">{errors.link}</p>}
