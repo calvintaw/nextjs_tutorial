@@ -28,7 +28,7 @@
 2. 🤸 [Environment Variables](#variables)
 3. 🤖 [New Feature I added](#new_features)
 
-## <a name="variables">Set Up Environment Variables</a>
+## <a name="variables">⚙️ Set Up Environment Variables</a>
 
 Create a new file named `.env.local` in the root of your project and add the following content:
 
@@ -116,7 +116,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 }
 ```
 
-## <a name="new_features">New Feature I added
+## 🚀 <a name="new_features">New Feature I Added</a>
+
+Here's a feature I built on top of the base course project to extend its functionality and explore new tools.
 
 <details>
 <summary><code>openai.ts</code></summary>
@@ -481,9 +483,9 @@ export default StartupForm;
 
 </details>
 
-## Note
+## ⚠️ Note
 
-Removed experimental PPR due to bugs that blocked installation of `react-markdown-editor`. Could be a skill issue, but sharing in case it helps someone else.
+Removed experimental PPR due to bugs that blocked installation of `react-markdown-editor`. Could be a skill issue 🤷‍♂️, but sharing in case it helps someone else.
 
 <details>
 <summary><code>\app\(root)\startup\[id]\page.tsx</code>
@@ -567,22 +569,14 @@ export default Page;
 
 </details>
 
-## ✨ Why I Added AI Integration to This Project
+## ✨ Why I Added AI Integration
 
-As I was working through the JSM Mastery Next.js 15 course, I found myself constantly needing to manually create startup pitch ideas just to test the functionality of the project. This repetitive task quickly became tedious and time-consuming.
+While following the JSM Mastery Next.js 15 course, I got tired of manually writing startup ideas just to test things. So I built a quick AI integration to auto-generate them based on form inputs like **title**, **description**, and **category**.
 
-To streamline my development process, I decided to integrate a small custom AI feature that could automatically generate pitch ideas based on optional form inputs like **title**, **description**, and **category**. This eliminated the need to manually write mock data and allowed me to test the project much faster and more creatively.
+I also used this as a chance to try out calling AI APIs (via OpenRouter + OpenAI) — something I hadn’t done before. Learned how to:
 
-Another major reason I introduced this feature was to **teach myself how to work with AI APIs** in a real-world context. Before this, I had never made a proper API call to an AI service or parsed and validated AI responses in a meaningful way. Implementing this feature gave me hands-on experience with:
+- Send prompts + get structured responses
+- Parse and use AI output in real code
+- Save time while keeping dev fun
 
-- Calling a language model using an API (via OpenRouter and OpenAI SDK)
-- Designing a structured prompt to get usable JSON output
-- Safely handling and parsing AI responses for use in a real app
-
-Overall, this addition helped me:
-
-- Learn something new
-- Make development smoother
-- Build something that feels genuinely useful and creative
-
-> 💡 This feature is not part of the original course — it's a custom enhancement I made for learning and convenience.
+> 💡 Not part of the course — just a custom add-on to make testing easier and learn something new.
